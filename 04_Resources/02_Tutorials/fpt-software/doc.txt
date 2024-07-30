@@ -1,0 +1,12 @@
+Structure & Work area: ST chỉ là cái khuôn, khi mình dùng thì cần một vùng nhớ để chứa dữ liệu làm việc, vùng này là WR
+
+TYPES:	BEGIN OF TY_SPFLI,				" Define a structure
+		CARRID		TYPE  SPFLI-CARRID,	" Airline
+		CONNID		TYPE  SPFLI-CONNID,	" Flight Number
+		CITYFROM	TYPE  SPFLI-CITYFROM,	" Departure City
+		CITYTO		TYPE  SPFLI-CITYTO,	" Arrival City
+		COUNTRYFR	TYPE  SPFLI-COUNTRYFR,	" Departure Country
+		COUNTRYTO	TYPE  SPFLI-COUNTRYTO,	" Arrival Country
+		NOTE		TYPE  TEXT40,
+	END OF TY-SPFLI.
+

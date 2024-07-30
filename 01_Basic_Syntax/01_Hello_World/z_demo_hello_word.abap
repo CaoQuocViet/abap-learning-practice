@@ -1,0 +1,2 @@
+START-OF-SELECTION.
+  WRITE: 'Hello World'.

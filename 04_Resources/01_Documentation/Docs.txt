@@ -1,2 +1,4 @@
 [Kiran Bandari] Complete ABAP (2020)
 sap-abap-advanced-cookbook_compress
+pdf-ha400-abap-programming-on-sap-hana_compress
+ABAP 74 Certification Guide _ SAP Certified Development Associate - PDF Room

@@ -22,11 +22,12 @@ W_ADD = W_NUM1 + W_NUM2.
 WRITE: 'Result of W_NUM1 + W_NUM2: ', W_ADD.
 
 * Applying BIT-NOT on W_OB1 and produces the result W_NOT.
-* (Bitwise Operation)
+* (Bitwise NOT-Operation on Hexadecimal value)
 W_NOT = BIT-NOT W_OB1.
 WRITE: /'Result of BIT-NOT on W_OB1: ',W_NOT.
 
 * Concatenation (&) of srings enclosed in two "|" (String Operation)
+* Inclue the space between two strings and.
 W_R = | HELLO | & | WORLD..!   |.
 WRITE : /'Output-1:  ',W_R.
 
@@ -41,3 +42,10 @@ IF ( W_OP1 LT W_OP2 ) AND ( W_OP2 LT W_OP3 ).
 ELSE.
   WRITE /'Both logical expressions are not true'.
 ENDIF.
+
+* Output:
+* Result of W_NUM1 + W_NUM2:               13
+* Result of BIT-NOT on W_OB1:   4D
+* Output-1:  HELLO WORLD..!
+* W_OP1 LESS THAN W_OP2
+* Both logical expressions are true

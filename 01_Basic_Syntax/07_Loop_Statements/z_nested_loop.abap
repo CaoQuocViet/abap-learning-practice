@@ -17,3 +17,23 @@ DO 3 TIMES.
     W_J = W_J + 1.
   ENDDO.
 ENDDO.
+
+" Output
+" Outer loop iteration 1
+"        Inner loop iteration 1
+"        Inner loop iteration 2
+"        Inner loop iteration 3
+"        Inner loop iteration 4
+"        Inner loop iteration 5
+" Outer loop iteration 2
+"        Inner loop iteration 1
+"        Inner loop iteration 2
+"        Inner loop iteration 3
+"        Inner loop iteration 4
+"        Inner loop iteration 5
+" Outer loop iteration 3
+"        Inner loop iteration 1
+"        Inner loop iteration 2
+"        Inner loop iteration 3
+"        Inner loop iteration 4
+"        Inner loop iteration 5

@@ -14,12 +14,12 @@ WHILE W_I < 10.
 ENDWHILE.
 
 * Output
-* 1
-* 2
-* 3
-* 4
-* 5
-* 6
-* 7
-* 8
-* 9
+* Interation: 1
+* Interation: 2
+* Interation: 3
+* Interation: 4
+* Interation: 5
+* Interation: 6
+* Interation: 7
+* Interation: 8
+* Interation: 9

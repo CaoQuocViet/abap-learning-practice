@@ -146,38 +146,38 @@ ENDFORM.
 
 *=====================================================================*
 
-Step-1: Go to SE71 transaction. It opens the 'Form painter: Request' screen. Enter the Form name with starting letter is Z or Y and select 'page layout' as subobjects. In this case, the form name is ZPRODUCT1 and click on Create button.
+" Step-1: Go to SE71 transaction. It opens the 'Form painter: Request' screen. Enter the Form name with starting letter is Z or Y and select 'page layout' as subobjects. In this case, the form name is ZPRODUCT1 and click on Create button.
 
-Step-2: It opens information dialog to create ZPRODUCT1 and click on Continue.
+" Step-2: It opens information dialog to create ZPRODUCT1 and click on Continue.
 
-Step-3: Enter the meaning and click on save.
+" Step-3: Enter the meaning and click on save.
 
-Step-4: It opens the 'Form: Change Header: ZPRODUCT1'. Click on Setting  Form Painter. In SAPscript tab, uncheck both options and click on Continue icon.
+" Step-4: It opens the 'Form: Change Header: ZPRODUCT1'. Click on Setting  Form Painter. In SAPscript tab, uncheck both options and click on Continue icon.
 
-Step-5: Click on Pages button to create a new page like below.
+" Step-5: Click on Pages button to create a new page like below.
 
-Step-6: Click on Character Formats to create custom character format like below.
+" Step-6: Click on Character Formats to create custom character format like below.
 
-Step-7: Click on Paragraph Formats to create a new paragraph like below.
+" Step-7: Click on Paragraph Formats to create a new paragraph like below.
 
-Step-8: Click on Windows button to create the new window like below.
+" Step-8: Click on Windows button to create the new window like below.
 
-Step-9: Click on Page windows button to configure the windows under the page. Click on Edit  Create Element to add the window.
+" Step-9: Click on Page windows button to configure the windows under the page. Click on Edit  Create Element to add the window.
 
-Step-10: Add main page as first one, HEADER page as second one and their alignments like below.
+" Step-10: Add main page as first one, HEADER page as second one and their alignments like below.
 
-Step-11: go to edit and click on text element to enter some content like below.
+" Step-11: go to edit and click on text element to enter some content like below.
 
-Step-12: Click on back to exit from Window header to go to 'Form: Change Header: ZPRODUCT1'. Step-12: Go to settings  Form painter.
+" Step-12: Click on back to exit from Window header to go to 'Form: Change Header: ZPRODUCT1'. Step-12: Go to settings  Form painter.
 
-Step-13: In SAPScript tab, check both options and click on Continue icon.
+" Step-13: In SAPScript tab, check both options and click on Continue icon.
 
-Step-14: It opens the page layout like below. Review the layout.
+" Step-14: It opens the page layout like below. Review the layout.
 
-Step-15: To close this layout go to setting  form painter and uncheck the graphical form painter.
+" Step-15: To close this layout go to setting  form painter and uncheck the graphical form painter.
 
-Step-16: Enter the default paragraph and First page name in the below screen on 'basic settings'.
+" Step-16: Enter the default paragraph and First page name in the below screen on 'basic settings'.
 
-Step-17: Activate the form.
+" Step-17: Activate the form.
 
-Step-18: Now Write the program to include the script.
+" Step-18: Now Write the program to include the script.

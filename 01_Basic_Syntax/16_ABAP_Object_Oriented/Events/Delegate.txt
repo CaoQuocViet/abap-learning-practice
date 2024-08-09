@@ -1,0 +1,38 @@
+Delegate
+
+0. Ôn lại kiến thức
+* Kiến thức 3 lớp khi làm App (Kết quả) --> Solution (quá trình làm)
+
+* Solution
+	PROJECT 1 - UI
+		- CONSOLE APP .EXE .DLL MAIN()
+		- WINDOWS FORMS .EXE .DLL và MAIN() để xuất phát
+
+	PROJECT 2 - REPOSITORIES - Cơ sở dữ liệu
+		- CLASS LIBRARY .DLL ENTITIES\CLass liên quan đến table, map xuống DB...\
+
+	PROJECT 3 - SERVICES - Thao tác trên dữ liệu trong Ram
+		* Class library .DLL
+
+1. Công thức #1:
+DATA TYPE	| VALUE -> VARIABLE
+		| VALUE -> VARIABLE
+		| VALUE -> VARIABLE
+		| VALUE -> VARIABLE
+		| VALUE -> VARIABLE
+
+2. Công thức #2:
+int yob = 2003;
+int currentYear = 2024;
+Student s1 = new Student("SE1", "AN NGUYEN", 2023, 8.6);
+Student s2 = new Student(id: "SE1", name: "AN NGUYEN", yob: 2003, gpa: 8.6);
+Student s3 = new Student() {id: "SE1", name: "AN NGUYEN", yob: 2003, gpa: 8.6};
+
+=> Hiểu được Delegate từdđó sẽ hiểu được các khái niệm liên quan phía sau:
+		- Lập trình hàm - Func programming
+		- Dependency injection
+		- LINQ
+		- Anonymous Func, Lambda Expression
+		- Callback Func
+
+Class name là danh từ chung (Data type), Object name là danh từ riêng (Variable)

@@ -49,3 +49,35 @@ X f1 = SayHello(); // Type variable = value
 
 --> f1 là 1 cái hàm có style X, có giá trị là cái hàm SayHello()
 --> f1 được gọi là con trỏ hàm (Func Pointer) vì nó = hoặc trỏ đến 1 hàm cụ thể
+
+
+Khai báo class:
+
+public class Persion
+{
+	Id, Name, Yob...
+	public Student(id, name, yob)
+	{
+		Id = id;
+	}
+}
+
+public class X [void X()] Delegate
+{
+	_fname // Tên hàm cần lưu
+	public X(Tên hàm muốn lưu trữ)
+	{
+		_fname = Tên hàm muốn lưu trữ;
+	}
+}
+
+Sử dụng:
+
+Student s = new Student(...) {...};
+X	f = new X(SayHello);
+
+=> Thay vì vậy thì hỗ trợ cú pháp Delaegate mới cho ngắn gọn, mục đích chỉ là lưu tên hàm:
+
++ Định nghĩa:	public delegate void MyDelegate(string message);
++ Tạo: 		MyDelegate del = new MyDelegate(MethodName);
++ Gọi: 		del("Hello, Delegate!");

@@ -1,1 +1,2 @@
-
+" Business Add-Ins (BADI) là một kỹ thuật mở rộng sử dụng phương pháp lập trình hướng đối tượng để cải thiện các chức năng của hệ thống SAP mà không cần thay đổi mã nguồn gốc. 
+" BADI cho phép bạn mở rộng chức năng của các chương trình ứng dụng mà SAP đã cung cấp, đáp ứng các yêu cầu riêng của người dùng hoặc khách hàng.

@@ -440,3 +440,66 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 **********************************************************************
 
 
+        out->write( zcl_demo_abap_aux=>heading( `21) ... deleting existing content (CORRESPONDING operator)` ) ).
+
+        itab_nested2 = CORRESPONDING #( DEEP itab_nested1 ).
+
+        out->write( data = itab_nested2 name = `itab_nested2` ).
+        
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `22) ... deleting existing content (MOVE-CORRESPONDING)` ) ).
+
+        MOVE-CORRESPONDING itab_nested1 TO itab_nested2 EXPANDING NESTED TABLES.
+
+        out->write( data = itab_nested2 name = `itab_nested2` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `23) ... keeping existing content (CORRESPONDING operator)` ) ).
+
+        itab_nested2 = CORRESPONDING #(DEEP BASE ( itab_nested2 ) itab_nested1 ).
+
+        out->write( data = itab_nested2 name = `itab_nested2` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `24) ... keeping existing content (MOVE-CORRESPONDING)` ) ).
+
+        MOVE-CORRESPONDING itab_nested1 TO itab_nested2 EXPANDING NESTED TABLES KEEPING TARGET LINES.
+
+        out->write( data = itab_nested2 name = `itab_nested2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Filling internal tables: Excursions` ) ).
+        out->write( |25) Selecting multiple rows from a database table into an internal table\n\n| ).
+
+        SELECT FROM zdemo_abap_tab1
+            FIELDS key_field, char1, char2, num1, num2
+            WHERE num1 > 3
+            INTO TABLE @DATA(itab_select1).
+
+        out->write( data = itab_select1 name = `itab_select1` ).
+
+
+**********************************************************************
+**********************************************************************

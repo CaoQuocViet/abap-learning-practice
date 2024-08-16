@@ -155,3 +155,288 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 **********************************************************************
 **********************************************************************
 
+        " heading: static method of ZCL_DEMO_ABAP_AUX
+        out->write( zcl_demo_abap_aux=>heading( `2) Adding initial line` ) ).
+
+        APPEND INITIAL LINE TO it_st.
+
+        INSERT INITIAL LINE INTO TABLE it_so.
+
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+        out->write( data = it_so name = `it_so` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `3) Adding multiple lines of an internal table to another one` ) ).
+
+        APPEND LINES OF it_so TO it_st.
+
+        DATA it_so2 LIKE it_so.
+
+        INSERT VALUE #( a = 3 b = 'g' c = 'h' d = 'i' ) INTO TABLE it_so2.
+
+        INSERT VALUE #( a = 4 b = 'j' c = 'k' d = 'l' ) INTO TABLE it_so2.
+
+        INSERT LINES OF it_so2 INTO TABLE it_so.
+
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+        out->write( data = it_so name = `it_so` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `4) Adding lines of an internal table to another one by specifying the index range.` ) ).
+
+        APPEND LINES OF it_so FROM 2 TO 3 TO it_st.
+
+        INSERT LINES OF it_so FROM 3 INTO TABLE it_st.
+
+        APPEND LINES OF it_so TO 2 TO it_st.
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `5) Inserting lines of an internal table into another one at a specific position` ) ).
+
+        INSERT VALUE #( a = 10 b = 'ggg' c = 'hhh' d = 'iii' ) INTO TABLE it_st INDEX 1.
+
+        INSERT LINES OF it_so2 INTO it_st INDEX 2.
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `6) Adding lines using constructor expressions` ) ).
+
+        line = VALUE #( a = 1 b = 'aaa' c = 'bbb' d = 'ccc' ).
+
+        it_st = VALUE #( ( line ) ( a = 2 b = 'ddd' c = 'eee' d = 'fff' ) ).
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `7) Creating a new table inline and adding lines using a constructor expression` ) ).
+
+        TYPES it_type LIKE it_st.
+
+        DATA(it_st2) = VALUE it_type( ( a = 3       b = 'ggg'
+                                        c = 'hhh'   d = 'iii' )
+                                      ( a = 4       b = 'jjj'
+                                        c = 'kkk'   d = 'lll') ).
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `8) Adding lines using constructor expressions and keeping existing table content` ) ).
+
+        "BASE addition: existing table content is not removed
+        it_st = VALUE #( BASE it_st ( a = 5 b = 'mmm' c = 'nnn' d = 'ooo' ) 
+                                    ( a = 6 b = 'ppp' c = 'qqq' d = 'rrr' ) 
+                        ).
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `9) Adding lines from other internal tables using constructor expressions` ) ).
+
+        it_st = VALUE #( BASE it_st ( LINES OF it_st2 )
+                       ( a = 7 b = 'sss' c = 'ttt' d = 'uuu' ) 
+                       ).
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `10) Copying table content (without constructor expression)` ) ).
+
+        it_st = it_st2.
+
+        out->write( data = it_st name = `it_st` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `11) CORRESPONDING Operator and MOVE-CORRESPONDING` ) ).
+        out->write( |Internal table content before assignments\n\n| ).
+
+        "Note: Before the following statements, the table content is reset
+        "to this state to work with the same set of values.
+        fill_itabs_for_corresponding( ).
+
+        out->write( data = tab1 name = `tab1` ).
+        out->write( |\n| ).
+        out->write( data = tab2 name = `tab2` ).
+        out->write( |\n| ).
+        out->write( data = tab3 name = `tab3` ).
+        out->write( |\n| ).
+        out->write( data = tab4 name = `tab4` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Copying content from another table that has a different line type ...` ) ).
+
+        out->write( |12) ... and deleting existing table content using the CORRESPONDING operator\n\n| ).
+
+        tab1 = CORRESPONDING #( tab2 ).
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `13) ... and deleting existing table content using MOVE-CORRESPONDING` ) ).
+
+        MOVE-CORRESPONDING tab2 TO tab1.
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `14) ... and keeping existing table content using the CORRESPONDING operator` ) ).
+
+        tab1 = CORRESPONDING #( BASE ( tab1 ) tab2 ).
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `15) ... and keeping existing table content using MOVE-CORRESPONDING` ) ).
+
+        MOVE-CORRESPONDING tab2 TO tab1 KEEPING TARGET LINES.
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `16) ... respecting component mapping` ) ).
+
+        tab1 = CORRESPONDING #( tab2 MAPPING a = e d = f ).
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `17) ... excluding components` ) ).
+
+        tab1 = CORRESPONDING #( tab2 EXCLUDING b ).
+
+        out->write( data = tab1 name = `tab1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `18) ... excluding components and using MAPPING` ) ).
+
+        " EXCEPT * means unspecified components are excluded
+        tab1 = CORRESPONDING #( tab2 MAPPING d = f EXCEPT * ).
+
+        out->write( data = tab1 name = `tab1` ).
+
+        fill_itabs_for_corresponding( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `19) ... discarding duplicates` ) ).
+
+        tab3 = CORRESPONDING #( BASE (tab3) tab4 DISCARDING DUPLICATES ).
+
+        out->write( data = tab3 name = `tab3` ).
+        out->write( |\n| ).
+
+        fill_itabs_for_corresponding( ).
+
+        tab3 = CORRESPONDING #( BASE (tab3) tab4 DISCARDING DUPLICATES
+                                MAPPING d = f EXCEPT b).
+
+        out->write( data = tab3 name = `tab3` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `20) Copying data from a deep internal table to another deep internal table` ) ).
+
+        itab_nested2 = CORRESPONDING #( DEEP itab_nested1 ).
+
+        itab_nested2 = CORRESPONDING #( DEEP BASE( itab_nested2 ) itab_nested1 ).
+
+        MOVE-CORRESPONDING itab_nested1 TO itab_nested2 EXPANDING NESTED TABLES.
+
+        MOVE-CORRESPONDING itab_nested1 TO itab_nested2 EXPANDING NESTED TABLES KEEPING TARGET LINES.
+
+        out->write( `Original table content` ).
+        out->write( |\n| ).
+        out->write( |\n| ).
+        out->write( data = itab_nested1 name = `itab_nested1` ).
+        out->write( |\n| ).
+        out->write( data = itab_nested2 name = `itab_nested2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+

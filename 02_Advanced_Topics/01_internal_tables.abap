@@ -574,11 +574,15 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
         out->write( zcl_demo_abap_aux=>heading( `30) Combining data of multiple tables into an` && ` internal table using an inner join` ) ).
 
+        "Filling table to be selected from
         itab = VALUE #( ( key_field = 500 char1 = 'uuu' char2 = 'vvv'
                           num1      = 501 num2  = 502 )
                           key_field = 600 char1 = 'www' char2 = 'xxx'
                           num1      = 601 num2  = 602 ) ).
 
+        "SELECT list includes fields from both tables
+        "If there are no equivalent entries in the first or second table, 
+        "the rows are not joined.
         SELECT itab_alias1~key_field, itab_alias1~char2, zdemo_abap_tab2~numlong
                 FROM @itab AS itab_alias1
                 INNER JOIN zdemo_abap_tab2
@@ -586,6 +590,87 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
                 INTO TABLE @DATA(join_result).
 
         out->write( data = join_result name = `join_result` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `31) Filling internal table ` && `using a subquery (1)` ) ).
+
+        "A subquery is specified in the WHERE clause
+        "Here, data is selected from a database table depending on
+        "whether the value of a certain field is not among the 
+        "values specified in parentheses.
+        SELECT key_field, char1, numlong
+                FROM zdemo_abap_tab2
+                WHERE char1 NOT IN ( 'iii', 'mmm', 'ooo', 'qqq' )
+                INTO TABLE @DATA(subquery_result1).
+
+        out->write( data = subquery_result1 name = `subquery_result1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `32) Filling internal table ` && `using a subquery (2)` ) ).
+
+        "A subquery using EXISTS in the WHERE clause.
+        "In the example, data is selected from a database table depending
+        "on the existence of data in an internal table. Only if a line
+        "with a matching value of the specified field exists in both
+        "database and internal table, data is read.
+        SELECT key_field, numlong
+                FROM zdemo_abap_tab2
+                WHERE EXISTS
+                        ( SELECT 'X' FROM @itab AS itab_alias2
+                          WHERE key_field = zdemo_abap_tab2~key_field )
+                INTO TABLE @DATA(subquery_result2).
+
+        out->write( data = subquery_result2 name = `subquery_result2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `33) Filling an internal table from a table ` && `depending on the existence of data in another internal table ` && `using the addition FOR ALL ENTRIES` ) ).
+
+        "In the example, data is selected from a database table depending
+        "on the existence of data in an internal table. Only if a line
+        "with a matching value of the specified field exists in both
+        "database and internal table, data is read.
+        "Ensure that the internal table from which to read is not initial.
+        IF ( 0 < lines( itab ) ).
+                SELECT key_field, char1, numlong
+                        FROM zdemo_abap_tab2
+                        FOR ALL ENTRIES IN @itab
+                        WHERE key_field = @itab-key_field
+                        INTO TABLE @DATA(select_result).
+        ENDIF.
+
+        out->write( data = select_result name = `select_result` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `34) Adding content from a database to internal` && ` table by using alias names in the SELECT list` ) ).
+
+        DATA itab2 TYPE TABLE OF zdemo_abap_tab2 WITH EMPTY KEY.
+
+        "Specifying alias names can help fill an existing internal
+        "table that has not a matching line type to the database table.
+        "Here, two fields are specified with an alias name to match the
+        "names of components contained in the existing internal table.
+        "The individual types of the fields match, too.
+        SELECT key_field, char2 AS char1, num2 AS num1
+                FROM zdemo_abap_tab1
+                INTO CORRESPONDING FIELDS OF TABLE @itab2 UP TO 3 ROWS.
+
+        out->write( data = itab2 name = `itab2` ).
 
 
 **********************************************************************

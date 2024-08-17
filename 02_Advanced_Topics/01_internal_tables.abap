@@ -503,3 +503,90 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading(  `26) Sequentially adding multiple rows from a database table to an internal table` ) ).
+
+        DATA itab TYPE TABLE OF zdemo_abap_tab1 WITH NON-UNIQUE client key_field.
+
+        SELECT FROM zdemo_abap_tab1
+                FIELDS *
+                WHERE num1 > 3
+                INTO @DATA(struc_select).
+
+                IF sy-subrc = 0.
+                        "Some modifications on the read lines (capitalizing letters)
+                        struc_select-char1 = to_upper( struc_select-char1 ).
+                        struc_select-char2 = to_upper( struc_select-char2 ).
+
+                        "Adding modified line to an internal table
+                        APPEND struc_select TO itab.
+                ENDIF.
+        ENDSELECT.
+
+        out->write( data = itab name = `itab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `27) Adding multiple rows from a database table ` && `to an internal table that has a different line type than the ` && `database table and keeping existing table content` ) ).
+
+        SELECT FROM zdemo_abap_tab2
+                FIELDS *
+                WEHRE num1 > 10
+                APPENDING CORRESPONDING FIELDS OF TABLE @itab.
+
+        out->write( data = itab name = `itab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `28) Adding multiple rows from a database table ` && `to an internal table that has a different line type than the ` && `database table and deleting existing table content` ) ).
+
+        SELECT FROM zdemo_abap_tab2
+                FIELDS *
+                WHERE num1 > 10
+                INTO CORRESPONDING FIELDS OF TABLE @itab.
+
+        out->write( data = itab name = `itab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `29) Adding multiple rows from an internal table ` && `to an internal table using SELECT` ) ).
+
+        SELECT key_filed, char1, char2, num1, num2
+            FROM @itab AS itab_alias
+            INTO TABLE @DATA(itab_clone).
+
+        out->write( data = itab_clone name = `itab_clone` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `30) Combining data of multiple tables into an` && ` internal table using an inner join` ) ).
+
+        itab = VALUE #( ( key_field = 500 char1 = 'uuu' char2 = 'vvv'
+                          num1      = 501 num2  = 502 )
+                          key_field = 600 char1 = 'www' char2 = 'xxx'
+                          num1      = 601 num2  = 602 ) ).
+
+        SELECT itab_alias1~key_field, itab_alias1~char2, zdemo_abap_tab2~numlong
+                FROM @itab AS itab_alias1
+                INNER JOIN zdemo_abap_tab2
+                        ON itab_alias1~key_field = zdemo_abap_tab2~key_field
+                INTO TABLE @DATA(join_result).
+
+        out->write( data = join_result name = `join_result` ).
+
+
+**********************************************************************
+**********************************************************************

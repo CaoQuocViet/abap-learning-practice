@@ -675,3 +675,117 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `35) FILTER: Filtering internal table by condition` ) ).
+
+        "This section covers multiple examples demonstrating the 
+        "syntactical variety of the FILTER operator.
+
+        TYPES: BEGIN OF fi_str
+                        a TYPE i,
+                        b TYPE c LENGTH 3,
+                        c TYPE c LENGTH 3,
+        END OF fi_str.
+
+        "basic form, condition created with single values
+        "itab must have at least one sorted key or one hash key used for access.
+        "This variant of the filter operator is not possible for an internal table itab without a sorted key or hash key.
+        DATA fi_tab1 TYPE SORTED TABLE OF fi_str WITH NON-UNIQUE KEY a.
+        DATA fi_tab2 TYPE STANDARD TABLE OF fi_str WITH NON-UNIQUE SORTED KEY sec_key COMPONENTS a.
+        DATA fi_tab3 TYPE HASHED TABLE OF fi_str WITH UNIQUE KEY a.
+
+        "FIlling internal tables
+        fi_tab1 = VALUE #( ( a = 1 b = 'aaa' c = 'aaa' )
+                           ( a = 2 b = 'bbb' c = 'bbb' )
+                           ( a = 3 b = 'ccc' c = 'ccc' )
+                           ( a = 4 b = 'ddd' c = 'ddd' )
+                           ( a = 5 b = 'eee' c = 'eee' ) ).
+
+        fi_tab2 = fi_tab1.
+        fi_tab3 = fi_tab1.
+
+        "The lines meeting the condition are respected.
+        "Note: The source table must have at least one sorted or hashed key.
+        "Here, the primary key is used
+        DATA(f1) = FILTER #( fi_tab1 WHERE a >= 3).
+
+        out->write( data = f1 name = `f1` ).
+        out->write( |\n| ).
+
+        "USING KEY primary_key explicitly specified; same as above
+        DATA(f2) = FILTER #( fi_tab1 USING KEY primary_key WHERE a >= 3).
+
+        out->write( data = f2 name = `f2` ).
+        out->write( |\n| ).
+
+        "EXCEPT addition
+        DATA(f3) = FILTER #( fi_tab1 EXCEPT WHERE a >= 3).
+
+        out->write( data = f3 name = `f3` ).
+        out->write( |\n| ).
+
+        DATA(f4) = FILTER #( fi_tab1 EXCEPT USING KEY primary_key WHERE a >= 3).
+
+        out->write( data = f4 name = `f4` ).
+        out->write( |\n| ).
+
+        "Secondary table key specified after USING KEY
+        DATA(f5) = FILTER #( fi_tab2 USING KEY sec_key WHERE a >= 4 ).
+
+        out->write( data = f5 name = `f5` ).
+        out->write( |\n| ).
+
+        DATA(f6) = FILTER #( fi_tab2 EXCEPT USING KEY sec_key WHERE a >= 3 ).
+
+        out->write( data = f6 name = `f6` ).
+        out->write( |\n| ).
+
+        "Note: In case of a hash key, exactly one comparison expression for each key
+        "component is allowed; only = as comparison operator possible.
+        DATA(f7) = FILTER #( fi_tab3 WHERE a = 3 ).
+
+        out->write( data = f7 name = `f7` ).
+        out->write( |\n| ).
+
+        "Using a filter table
+        "In the WHERE condition, the columns of source and filter table are compared.
+        "Those lines in the source table are used for which at least one line in the
+        "filter table meets the condition. EXCEPT and USING KEY are also possible.
+
+        "Declaring and filling filter tables
+        DATA filter_tab1 TYPE SORTED TABLE OF i
+                WITH NON-UNIQUE KEY table_line.
+
+        DATA filter_tab2 TYPE STANDARD TABLE OF i
+                WITH EMPTY KEY
+                WITH UNIQUE SORTED KEY line COMPONENTS table_line.
+
+        filter_tab1 = VALUE #( ( 3 ) ( 5 ) ).
+        filter_tab2 = filter_tab1.
+ 
+        DATA(f8) = FILTER #( fi_tab1 IN filter_tab1 WHERE a = table_line ).
+
+        out->write( data = f8 name = `f8` ).
+        out->write( |\n| ).
+
+        "EXECPT addition
+        DATA(f9) = FILTER #( fi_tab1 EXECPT IN filter_tab1 WHERE a = table_line ).
+
+        out->write( data = f9 name = `f9` ).
+        out->write( |\n| ).
+
+        "USING KEY is specified for the filter table
+        DATA(f10) = FILTER #( fi_tab2 IN filter_tab2 USING KEY line WHERE a = table_line ).
+
+        out->write( data = f10 name = `f10` ).
+        out->write( |\n| ).
+
+        "USING KEY is specified for the source table, including EXCEPT
+        DATA(f11) = FILTER #( fi_tab2 USING KEY sec_key EXCEPT IN filter_tab2 WHERE a = table_line ).
+
+        out->write( data = f11 name = `f11` ).
+
+
+**********************************************************************
+**********************************************************************

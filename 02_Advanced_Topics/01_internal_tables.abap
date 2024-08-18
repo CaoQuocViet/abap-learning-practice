@@ -789,3 +789,107 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `36) Inserting data into an internal table ` && `using a COLLECT statement` ) ).
+
+        "Internale table to work with
+        DATA itab_num TYPE SORTED TABLE OF l_type2
+                WITH UNIQUE KEY key_field.
+
+        itab_num = VALUE #( ( key_field = 1 num1 = 10 num2 = 20 )
+                            ( key_field = 2 num1 = 30 num2 = 40 )
+                            ( key_field = 3 num1 = 50 num2 = 60 ) ).
+
+        "Values of numeric components are added to the
+        "corresponding values in an internal table
+        COLLECT VALUE l_type2( key_field = 1 num1 = 10 num2 = 20 )
+                INTO itab_num.
+
+        out->write( data = itab_num name = `itab_num` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `37) Reading from internal tables` ) ).
+
+        "Filling internal tables
+        it_st = VALUE #( ( a = 1 b = 'aaa' c = 'bbb' d = 'ccc' )
+                         ( a = 2 b = 'ddd' c = 'eee' d = 'fff' )
+                         ( a = 3 b = 'ggg' c = 'hhh' d = 'iii' ) ).
+
+        "Declaring demo sorted/hashed tables having primary and
+        "secondary keys as well as alias names defined
+        DATA it_so_sec TYPE SORTED TABLE OF struc1
+                WITH NON-UNIQUE KEY primary_key ALIAS pk COMPONENTS a
+                WITH NON-UNIQUE SORTED KEY sec_key ALIAS sk COMPONENTS b.
+
+        DATA it_ha_sec TYPE HASHED TABLE OF struc1
+                WITH UNIQUE KEY primary_key ALIAS pkh COMPONENTS A
+                WITH NON-UNIQUE SORTED KEY sec_key_h ALIAS skh COMPONENTS b.
+
+        "Filling internal table
+        it_so_sec = VALUE #( ( a = 1 b = 'bbb' c = '###' d = '###' )
+                             ( a = 2 b = 'ddd' c = '###' d = '###' )
+                             ( a = 3 b = 'ggg' c = '###' d = '###' )
+                             ( a = 4 b = 'hhh' c = '###' d = '###' ) ).
+
+        "Filling internal table with the content above
+        it_ha_sec = it_so_sec.
+
+        out->write( `Original table content` ).
+        out->write( |\n| ).
+        out->write( |\n| ).
+        put->write( data = it_so_sec name = `it_so_sec` ).
+        out->write( |\n| ).
+        out->write( data = it_ha_sec name = `it_ha_sec` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `38) Reading a single line into target area` ) ).
+
+        "The examples anticipate the reading of a line by index since the
+        "syntax requires to specify the reading via index or key. Both
+        "inline declarations and existing target areas are demonstrated.
+
+        "Work area
+        READ TABLE it_so_sec INTO DATA(wa1) INDEX 1.
+        DATA wa2 LIKE LINE OF it_so_sec.
+
+        "The addition TRANSPORTING specifies which components are to be
+        "respected for the copying. If it is not specified, all components
+        "are respected.
+        READ TABLE it_so_sec INTO wa2 INDEX 2 TRANSPORTING a b c.
+
+        "Field symbol
+        READ TABLE it_so_sec ASSIGNING FIELD-SYMBOL(<fs1>) INDEX 3.
+
+        FIELD-SYMBOLS <fs2> LIKE LINE OF it_so_sec.
+        READ TABLE it_st ASSIGNING <fs2> INDEX 1.
+
+        "Data reference variable
+        READ TABLE it_so_sec REFERENCE INTO DATA(dref1) INDEX 4.
+
+        DATA dref2 LIKE REF TO wa2.
+        READ TABLE it_so_sec REFERENCE INTO dref2 INDEX 2.
+
+        out->write( data = wa1 name = `wa1` ).
+        out->write( |\n| ).
+        out->write( data = wa2 name = `wa2` ).
+        out->write( |\n| ).
+        out->write( data = <fs1> name = `<fs1>` ).
+        out->write( |\n| ).
+        out->write( data = <fs2> name = `<fs2>` ).
+        out->write( |\n| ).
+        out->write( data = dref1->* name = `dref1->*` ).
+        out->write( |\n| ).
+        out->write( data = dref2->* name = `dref2->*` ).
+
+
+**********************************************************************
+**********************************************************************

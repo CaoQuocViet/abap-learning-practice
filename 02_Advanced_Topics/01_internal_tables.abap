@@ -893,3 +893,87 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Reading a single line via index ...` ) ).
+        out->write( |39) ... using READ TABLE\n\n| ).
+
+        "Primary table index used implicitly
+        READ TABLE it_so_sec INTO DATA(wa3) INDEX 1.
+
+        "Primary table index used implicitly; result here: same as above
+        READ TABLE it_so_sec INTO DATA(wa4) INDEX 1 USING KEY primary_key.
+
+        "Primary table key alias; result here: same as above
+        READ TABLE it_so_sec INTO DATA(wa5) INDEX 1 USIGN KEY pk.
+
+        "Secondary table key; secondary table index used
+        READ TABLE it_so_sec INTO DATA(wa6) INDEX 1 USING KEY sec_key.
+
+        "Secondary table key alias; secondary table index used
+        READ TABLE it_so_sec INTO DATA(wa7) INDEX 1 USING KEY sk.
+
+        "Index access for hashed tables using secondary table index
+        READ TABLE it_ha_sec INTO DATA(wa8) INDEX 2 USING KEY sec_key_h.
+
+        out->write( data = wa3 name = `wa3` ).
+        out->write( |\n| ).
+        out->write( data = wa4 name = `wa4` ).
+        out->write( |\n| ).
+        out->write( data = wa5 name = `wa5` ).
+        out->write( |\n| ).
+        out->write( data = wa6 name = `wa6` ).
+        out->write( |\n| ).
+        out->write( data = wa7 name = `wa7` ).
+        out->write( |\n| ).
+        out->write( data = wa8 name = `wa8` ).
+
+
+**********************************************************************
+**********************************************************************
+
+        out->write( zcl_demo_abap_aux=>heading( `40) ... table expressions (1)` ) ).
+
+        "Reading via index; primary table index is used implicitly
+        DATA(lv1) = it_so_sec[2].
+
+        "Note: A line that is not found results in a runtime error
+        DATA(idx) = 10.
+
+        TRY
+                DATA(lv2) = it_so_sec[idx].
+                CATCH cx_sy_itab_line_not_found.
+                        DATA(error) = |Line with index {idx} does not exist.|.
+        ENDTRY.
+
+        "Reading via index and specifying the table index (via the key)
+        "to be read from
+        DATA(lv3) = it_so_sec[ KEY primary_key INDEX 1 ].
+
+        DATA(lv4) = it_so_sec[ KEY sec_key INDEX 4 ].
+
+        "Hashed table example (secondary table index)
+        DATA(lv5) = it_ha_sec[ KEY sec_key_h INDEX 3 ].
+
+        out->write( data = lv1 name = `lv1` ).
+        out->write( |\n| ).
+
+        IF lv2 IS NOT INITIAL.
+                out->write( data = lv2 name = `lv2` ).
+                out->write( |\n| ).
+        ENDIF.
+
+        IF error IS NOT INITIAL.
+                out->write( data = error name = `error` ).
+                out->write( |\n| ).
+        ENDIF.
+          
+        out->write( data = lv3 name = `lv3` ).
+        out->write( |\n| ).
+        out->write( data = lv4 name = `lv4` ).
+        out->write( |\n| ).
+        out->write( data = lv5 name = `lv5` ).
+
+
+**********************************************************************
+**********************************************************************

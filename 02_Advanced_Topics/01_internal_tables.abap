@@ -1119,3 +1119,87 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `46) Excursion: Addressing individual components` ) ).
+        "Addressing a component using the component selector
+        DATA(comp1) = it_so_sec[ 1 ]-b.
+
+        READ TABLE it_so_sec ASSIGNING FIELD-SYMBOL(<fs3>) INDEX 2.
+
+        DATA(comp2) = <fs3>-c.
+
+        READ TABLE it_so_sec REFERENCE INTO DATA(dref4) INDEX 3.
+
+        DATA(comp3) = dref4->*-a.
+
+        "Same effect as above but less to write
+        DATA(comp4) = dref4->b.
+
+        out->write( data = comp1 name = `comp1` ).
+        out->write( |\n| ).
+        out->write( data = comp2 name = `comp2` ).
+        out->write( |\n| ).
+        out->write( data = comp3 name = `comp3` ).
+        out->write( |\n| ).
+        out->write( data = comp4 name = `comp4` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `47) Checking if a line exists in an internal table` ) ).
+
+        "Defining the key
+        DATA(key) = 2.
+
+        "Internal table functions
+        IF line_exists(it_so_sec[ a = key1 ] )
+                out->write( |Line with key { key1 } exists.| ).
+        ELSE.
+                out->write( |Line with key { key1 } does not exist.| ).
+        ENDIF.
+
+        out->write( |\n| ).
+
+        "Alternative using READ TABLE (sy-subrc is checked)
+        "When using the addition TRANSPORTING NO FIELDS, no field values
+        "are read. Only the system fields are filled.
+        READ TABLE it_so_sec WITH KEY a = key1 TRANSPORTING NO FIELDS.
+
+        IF sy-subrc = 0.
+                out->write( |Line with key { key1 } exists.| ).
+        ELSE.
+                out->write( |Line with key { key1 } does not exist.| ).
+        ENDIF.
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `49) Checking how many lines are in an` && ` internal table` ) ).
+
+        DATA(itab_lines) = lines( it_so_sec ).
+
+        out->write( data = itab_lines name = `itab_lines` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Processing multiple internal table lines ` && `sequentially` ) ).
+        out->write( |50) Reading a complete table by sequentially reading all lines\n\n| ).
+
+        "No further addition: All lines are respected.
+        LOOP AT it_so_sec ASSIGNING FIELDS-SYMBOL(<fs4>).
+                <fs4>-b = 'ZZZ'.
+        ENDLOOP.
+
+        out->write( data = it_so_sec name = `it_so_sec` ).
+
+
+**********************************************************************
+**********************************************************************

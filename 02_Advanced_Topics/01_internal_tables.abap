@@ -1179,6 +1179,67 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 **********************************************************************
 
 
+        out->write( zcl_demo_abap_aux=>heading( `48) Checking the index of a ` && `specific line` ) ).
+
+        DATA(key2) = 4.
+
+        DATA(idx_of_line1) = line_index( it_so_sec[ a = key2 ] ).
+
+        DATA(key3) = 10.
+
+        DATA(idx_of_line2) = line_index( it_so_sec[ a = key3 ] ).
+
+        "Alternative using READ TABLE
+        "The table index is written to the sy-tabix system field
+        READ TABLE it_so_sec WITH KEY a = key2 TRANSPORTING NO FIELDS.
+
+        IF sy-subrc = 0.
+                DATA(tab_idx1) = sy-tabix.
+        ENDIF.
+        
+        READ TABLE it_so_sec WITH KEY a = key3 TRANSPORTING NO FIELDS.
+          
+        IF sy-subrc = 0.
+                DATA(tab_idx2) = sy-tabix.
+        ENDIF.
+
+        IF idx_of_line1 <> 0.
+                out->write( |Index of line with key { key2 }: { idx_of_line1 }| ).
+        ELSE.
+                out->write( |Line with key { key2 } does not exist.| ).
+        ENDIF.
+
+        out->write( |\n| ).
+
+        IF idx_of_line2 <> 0.
+                out->write( |Index of line with key { key3 }: { idx_of_line2 }| ).
+        ELSE.
+                out->write( |Line with key { key3 } does not exist.| ).
+        ENDIF.
+
+        out->write( |\n| ).
+
+        IF tab_idx1 <> 0.
+                out->write( |Index of line with key { key2 }: { tab_idx1 }| ).
+        ELSE.
+                out->write( |Line with key { key2 } does not exist.| ).
+        ENDIF.
+
+        out->write( |\n| ).
+
+        IF tab_idx2 <> 0.
+                out->write( |Index of line with key { key3 }: { tab_idx2 }| ).
+        ELSE.
+                out->write( |Line with key { key3 } does not exist.| ).
+        ENDIF.
+
+        out->write( |\n| ).
+
+
+**********************************************************************
+**********************************************************************
+
+
         out->write( zcl_demo_abap_aux=>heading( `49) Checking how many lines are in an` && ` internal table` ) ).
 
         DATA(itab_lines) = lines( it_so_sec ).

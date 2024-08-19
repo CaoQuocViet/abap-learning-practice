@@ -935,7 +935,7 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
         out->write( zcl_demo_abap_aux=>heading( `40) ... table expressions (1)` ) ).
 
         "Reading via index; primary table index is used implicitly
-        DATA(lv1) = it_so_sec[2].
+        DATA(lv1) = it_so_sec[ 2 ].
 
         "Note: A line that is not found results in a runtime error
         DATA(idx) = 10.
@@ -973,6 +973,148 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
         out->write( data = lv4 name = `lv4` ).
         out->write( |\n| ).
         out->write( data = lv5 name = `lv5` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `41) ... table expressions (2)` ) ).
+
+        "Copying a table line via table expressions and embedding in
+        "a constructor expression
+        DATA(lv6) = VALUE #(it_so_sec[ 2 ]).
+
+        "Reading iton data reference variable using the REF operator
+        DATA(dref3) = REF #( it_so_sec[ 4 ] ).
+
+        "OPTIONAL/DEFAULT additions: An unsuccessful reading operation
+        "deos not raise line in case of an unsuccessful reading operation
+        DATA(lv7) = VALUE #(it_so_sec[ 10 ] OPTIONAL ).
+
+        DATA(lv8) = VALUE #(it_so_sec[ 10 ] DEFAULT it_so_sec[ 1 ] ).
+
+        out->write( data = lv6 name = `lv6` ).
+        out->write( |\n| ).
+        out->write( data = dref3->* name = `dref3->*` ).
+        out->write( |\n| ).
+        out->write( data = lv7 name = `lv7` ).
+        out->write( |\n| ).
+        out->write( data = lv8 name = `lv8` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Reading a single line via table keys ...` ) ).
+        out->write( |42) ... using READ TABLE (1)\n| ).
+
+        "Primary table key (COMPONENTS addition is optional)
+        READ TABLE it_so_sec INTO DATAA(wa9)
+                WITH TABLE KEY primary_key COMPONENTS a = 1.
+
+        READ TABLE it_so_sec INTO DATA(wa10) WITH TABLE KEY a = 2.
+
+        "Primary table key alias
+        READ TABLE it_so_sec INTO DATAA(wa11)
+                WITH TABLE KEY pk COMPONENTS a = 3.
+
+        "Secondary table key
+        READ TABEL it_so_sec INTO DATAA(wa12)
+                WITH TABLE KEY sec_key COMPONENTS b = 'hhh'.
+
+        "Secondary table key alias
+        READ TABLE it_so_sec INTO DATA(wa13)
+                WITH TABLE KEY sk COMPONENTS b = 'ggg'.
+
+        out->write( data = wa9 name = `wa9` ).
+        out->write( |\n| ).
+        out->write( data = wa10 name = `wa10` ).
+        out->write( |\n| ).
+        out->write( data = wa11 name = `wa11` ).
+        out->write( |\n| ).
+        out->write( data = wa12 name = `wa12` ).
+        out->write( |\n| ).
+        out->write( data = wa13 name = `wa13` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `43) ... using READ TABLE (2)` ) ).
+
+        "Reading a line based on keys specified in a work area
+        "Here, the work area contains primary and secondary key values.
+        "The line type is compatible to the internal table.
+        DATA(pr_keys) = VALUE struc1( a = 2 ).
+
+        DATA(sec_keys) = VALUE struc1( b = 'ggg' ).
+
+        "Primary table key is used implicitly
+        READ TABLE it_so_sec  FROM pr_keys INTO DATA(wa14).
+
+        "If USING KEY is not specified, the primary table key is used.
+        "If it is used, the specified table key is used.
+        "Secondary table key
+        READ TABLE it_so_sec FROM sec_keys
+                USING KEY sec_key INTO DATA(wa15).
+
+        "Primary table key; result: same as wa14
+        READ TABLE it_so_sec FROM pr_keys
+                USING KEY primary_key INTO DATA(wa16).
+
+        out->write( data = wa14 name = `wa14` ).
+        out->write( |\n| ).
+        out->write( data = wa15 name = `wa15` ).
+        out->write( |\n| ).
+        out->write( data = wa16 name = `wa16` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `44) ... using table expressions` ) ).
+        "Primary table key (COMPONENTS addition is optional)
+        DATA(lv9) = it_so_sec[ KEY primary_key COMPONENTS a = 1 ].
+
+        DATA(lv10) = it_so_sec[ KEY primary_key a = 2 ].
+
+        DATA(lv11) = it_so_sec[ KEY pk COMPONENTS a = 3 ]. "Alias
+
+        "Secondary table key (COMPONENTS mandatory)
+        DATA(lv12) = it_so_sec[ KEY sec_key COMPONENTS b = 'hhh' ].
+
+        DATA(lv13) = it_so_sec[ KEY sk b = 'ggg' ]. "Alias
+
+        out->write( data = lv9 name = `lv9` ).
+        out->write( |\n| ).
+        out->write( data = lv10 name = `lv10` ).
+        out->write( |\n| ).
+        out->write( data = lv11 name = `lv11` ).
+        out->write( |\n| ).
+        out->write( data = lv12 name = `lv12` ).
+        out->write( |\n| ).
+        out->write( data = lv13 name = `lv13` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `45) Reading a single line via free key` ) ).
+
+        "Note: If there a multiple matching entries, the first found
+        "is returned.
+        READ TABLE it_so_sec INTO DATA(wa17) WITH KEY c = '###'.
+
+        DATA(lv14) = it_so_sec[ c = '###' ].
+
+        out->write( data = wa17 name = `wa17` ).
+        out->write( |\n| ).
+        out->write( data = lv14 name = `lv14` ).
 
 
 **********************************************************************

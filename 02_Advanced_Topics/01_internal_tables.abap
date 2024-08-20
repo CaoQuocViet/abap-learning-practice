@@ -1417,3 +1417,93 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `STEP addition in LOOP AT statements` ) ).
+        out->write( |56) Reversing loop order\n\n| ).
+
+        DATA(it_abc) = VALUE string_table( ( `a` ) ( `b` ) ( `c` ) ( `d` ) ( `e` ) ( `f` ) ).
+
+        DATA it_abc_result TYPE string_table.
+
+        "Reversing the loop order with the addition STEP
+        "Each line is read indicated by absolute value 1
+        LOOP AT it_abc ASSIGNING FIELD-SYMBOL(<step>) STEP -1.
+                APPEND <step> TO it_abc_result.
+        ENDLOOP.
+
+        out->write( data = it_abc_result name = `it_abc_result` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `57) Forward loop and defining step size` ) ).
+
+        "Forward loop indicated by positive integer, every second line is processed
+        CLEAR it_abc_result.
+        LOOP AT it_abc ASSIGNING FIELD-SYMBOL(<sec>) STEP 2.
+                APPEND <sec> TO it_abc_result.
+        ENDLOOP.
+
+        out->write( data = it_abc_result name = `it_abc_result` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+**********************************************************************
+
+        out->write( zcl_demo_abap_aux=>heading( `58) STEP addition combined with FROM/TO` ) ).
+
+        "Combining the STEP addition with other additions, e.g. FROM and TO
+        "Note: If the value after STEP is negative, the value after FROM
+        "must be greater than the value after TO.
+        CLEAR it_abc_result.
+        LOOP AT it_abc ASSIGNING FIELD-SYMBOL(<from_to>) FROM 6 TO 3 STEP -2.
+                APPEND <from_to> TO it_abc_result.
+        ENDLOOP.
+
+        out->write( data = it_abc_result name = `it_abc_result` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Creating and filling tables using table ` && `iterations with FOR and VALUE` ) ).
+        out->write( |59) Retrieving values of one column in an internal table.\n\n| ).
+
+        "Creating internal table type 
+        TYPES ty_numbers TYPE TABLE OF i WITH EMPTY KEY.
+
+        "Table comprehension: Content of an internal table is created by
+        "evaluating a table using a table iteration with an iteration
+        "expressions within a constructor expression.
+        DATA(lv_num_a) = VALUE ty_numbers( FOR ls1 IN it_ha_sec ( ls1-a ) ).
+
+        out->write( data = lv_num_a name = `lv_num_a` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `60) Retrieving values of one column in ` && `an internal table based on conditions` ) ).
+
+        "Internal table type
+        TYPES tabtype LIKE it_so_sec.
+
+        DATA(itab_for_2tab) = 
+                VALUE tabtype(
+                                FOR ls3 IN it_ha_sec
+                                FOR ls4 IN it_so_sec WHERE ( a = ls3-a )
+                                                           ( a = ls3-a b = ls4-b c = ls3-c d = ls4-d ) ).
+
+        out->write( data = itab_for_2tab name = `itab_for_2tab` ).
+
+
+**********************************************************************
+**********************************************************************

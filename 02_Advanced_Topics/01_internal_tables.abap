@@ -943,7 +943,7 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
         TRY
                 DATA(lv2) = it_so_sec[idx].
                 CATCH cx_sy_itab_line_not_found.
-                        DATA(error) = |Line with index {idx} does not exist.|.
+                        DATA(error) = |Line with index { idx } does not exist.|.
         ENDTRY.
 
         "Reading via index and specifying the table index (via the key)
@@ -1260,6 +1260,98 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
         ENDLOOP.
 
         out->write( data = it_so_sec name = `it_so_sec` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading(  `51) LOOP AT statements with different targets` ) ).
+
+        "The following examples demonstrate the different targets that
+        "are possible for LOOP AT statements. In the example above,
+        "a field symbol is created inline.
+        "As above, there are no additions to the loop statement, i.e. all lines
+        "are processed.
+
+        DATA(lines_in_table) = lines(it_so_sec).
+        out->write( |There should be { lines_in_table } interations per loop.| ).
+        out->write( |\n| ).
+
+        "Target: Existing work area
+        out->write( `---- Target: Existing work area ----` ).
+        out->write( |\n| ).
+        DATA wa_lo LIKE LINE OF it_so_sec.
+
+        LOOP AT it_so_sec INTO wa_lo.
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
+
+        out->write( |\n| ).
+        out->write( `---- Loop target: Work area created inline ----` ).
+        out->write( |\n| ).
+
+        LOOP AT it_so_sec INTO DATA(wa_inl).
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
+
+        out->write( |\n| ).
+        out->write( `---- Loop target: Existing field symbol ----` ).
+        out->write( |\n| ).
+
+        FIELD-SYMBOLS <fs_lo> LIKE LINE OF it_so_sec.
+        LOOP AT it_so_sec ASSIGNING <fs_lo>.
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
+
+        out->write( |\n| ).
+        out->write( `---- Loop target: Field symbol created inline ----` ).
+        out->write( |\n| ).
+
+        LOOP AT it_so_sec ASSIGNING FIELD-SYMBOL(<fs_inl>).
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
+
+        out->write( |\n| ).
+        out->write( `---- Loop target: Existing data reference variable ----` ).
+        out->write( |\n| ).
+
+        DATA dref_lo TYPE REF INTO struc1.
+        LOOP AT it_so_sec REFERENCE INTO dref_lo.
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
+
+        out->write( |\n| ).
+        out->write( `---- Loop target: Data reference variable created inline ----` ).
+        out->write( |\n| ).
+
+        LOOP AT it_so_sec REFERENCE INTO DATA(dref_inl).
+                IF sy-tabix = 1.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ELSEIF sy-tabix = lines_in_table.
+                        out->write( |This text is displayed when reaching line { sy-tabix }.| ).
+                ENDIF.
+        ENDLOOP.
 
 
 **********************************************************************

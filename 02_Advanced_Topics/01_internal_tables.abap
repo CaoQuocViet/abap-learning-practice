@@ -1356,3 +1356,64 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `52) Reading multiple lines by an index range` ) ).
+
+        "Specific lines in an index range are respected
+        "Note: FROM/TO alone can specified, too.
+        LOOP AT it_so_sec ASSIGNING FIELD-SYMBOL(<fs5>) FROM 2 TO 3.
+                <fs5>-c = '###'.
+        ENDLOOP.
+
+        out->write( data = it_so_sec name = `it_so_sec` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `53) Reading multiple lines by condition` ) ).
+
+        LOOP AT it_so_sec ASSIGNING FIELD-SYMBOL(<fs6>) WHERE a < 3.
+                <fs6>-d = 'XXX'.
+        ENDLOOP.
+
+        out->write( data = it_so_sec name = `it_so_sec` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `54) Looping across a table without an interest` && ` in the table content` ) ).
+
+        LOOP AT it_so_sec TRANSPORTING NO FIELDS a < 3.
+                DATA(num) = sy-tabix.
+        ENDLOOP.
+
+        out->write( |There are { num } lines in the fulfilling the condition| ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `55) Loop with table key specification` ) ).
+
+        DATA it_st_em TYPE TABLE OF struc1 WITH EMPTY KEY.
+
+        "Looping across hashed table using a secondary key. The loop starts
+        "according to the secondary table index. The lines are added to
+        "another internal table having a matching type. It basically
+        "visualizes the order of the table lines in the secondary table
+        "index.
+        LOOP AT it_ha_sec ASSIGNING FIELD-SYMBOL(<fs7>) USING KEY sec_key_h.
+                APPEND <fs7> TO it_st_em.
+        ENDLOOP.
+
+        out->write( data = it_st_em name = `it_st_em` ).
+
+
+**********************************************************************
+**********************************************************************

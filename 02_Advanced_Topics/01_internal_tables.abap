@@ -1496,6 +1496,20 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
         "Internal table type
         TYPES tabtype LIKE it_so_sec.
 
+        DATA(lv_num_b) = VALUE ty_numbers( FOR ls2 IN it_ha_sec
+        WHERE ( a < 3 ) ( ls2-a ) ).
+
+        out->write( data = lv_num_b name = `lv_num_b` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `61) Looping across 2 tables ` && `and retrieving values based on conditions` ) ).
+        "Internal table type
+        TYPES tabtype LIKE it_so_sec.
+
         DATA(itab_for_2tab) = 
                 VALUE tabtype(
                                 FOR ls3 IN it_ha_sec
@@ -1503,6 +1517,88 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
                                                            ( a = ls3-a b = ls4-b c = ls3-c d = ls4-d ) ).
 
         out->write( data = itab_for_2tab name = `itab_for_2tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `62) Retrieving and changing values from an ` && `internal tables sequentially` ) ).
+
+        DATA(it_changed) = VALUE tabtype( FOR ls5 IN it_so_sec 
+                                        ( a = ls5-a b = 'WWW' c = 'VVV' d = 'UUU' ) ).
+
+        out->write( data = it_changed name = `it_changed` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `63) Sorting internal tables` ) ).
+
+        "Creating structured data types
+        TYPES: BEGIN OF s1,
+                a TYPE i,
+                b TYPE string,
+                c TYPE c LENGTH 1,
+                d TYPE i,
+               END OF s1.
+
+        TYPES: BEGIN OF s2,
+                a TYPE i,
+                b TYPE i,
+               END OF s2.
+
+        "Creating internal tables
+        DATA it1 TYPE TABLE OF s1 WITH NON-UNIQUE KEY a.
+        DATA it2 TYPE TABLE OF s2 WITH DEFAULT KEY.
+
+        "Filling internal tables
+        it1 = VALUE #( ( a = 1 b = `c` c = 'z' d = 4 )
+                       ( a = 2 b = `b` c = 'y' d = 3 )
+                       ( a = 3 b = `a` c = 'x' d = 2 )
+                       ( a = 4 b = `d` c = 'w' d = 1 )
+                       ( a = 5 b = `e` c = 'v' d = 0 )
+                       ( a = 6 b = `f` c = 'u' d = 9 )
+                       ( a = 7 b = `g` c = 't' d = 8 )
+                       ( a = 8 b = `h` c = 's' d = 7 )
+                       ( a = 9 b = `i` c = 'r' d = 6 )
+                       ( a = 10 b = `j` c = 'q' d = 5 ) ).
+
+        it2 = it1.
+
+        out->write( `Origin internal table content ` && `(it1 and it2 have the same content)` ).
+        out->write( |\n| ).
+        out->write( |\n| ).
+        out->write( data = it1 name = `it1` ).
+        out->write( |\n| ).
+        out->write( data = it2 name = `it2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `64) Sorting by primary table key` ) ).
+
+        "Primary key: component a
+        SORT it1.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `65) Sorting by primary table key in ascending` && ` order` ) ).
+
+        "The sorting result is the same as above (where ASCENDING is used
+        "implicitly). Here, it is explicitly specified.
+        SORT it1 ASCENDING.
+
+        out->write( data = it1 name = `it1` ).
 
 
 **********************************************************************

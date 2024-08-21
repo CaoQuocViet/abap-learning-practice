@@ -1603,3 +1603,69 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `66) Sorting by primary table key respecting all ` && `non-numeric fields` ) ).
+
+        "Primary key: standard table key (all non-numeric fields)
+        SORT it2.
+
+        out->write( data = it2 name = `it2` ).
+
+        "The following code is commented out on purpose because it
+        "produces a syntax warning. The primary table key is empty.
+        "A sorting has no effect.
+        "SORT it3.
+        "out->write( data = it3 name = `it3` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `67) Sorting by primary table key in ` && `descending order` ) ).
+
+        "Sorting in descending order and by primary table key
+        SORT it1 DESCENDING.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `68) Sorting by explicitly specified component (1)` ) ).
+        "Here, the component is the primary table key.
+        "The sorting result is the same as above.
+        SORT it1 BY a DESCENDING.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `69) Sorting by explicitly specified component (2)` ) ).
+
+        "Sorting by arbitrary, non-key field
+        SORT it1 BY d DESCENDING.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `70) Sorting by multiple explicitly specified` && ` components` ) ).
+
+        "Sorting by multiple components and specifying the sort order
+        SORT it1 BY b ASCENDING c DESCENDING.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************

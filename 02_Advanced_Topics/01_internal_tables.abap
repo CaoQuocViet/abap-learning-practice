@@ -1831,3 +1831,85 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `76) Deleting adjacent duplicate entries` ) ).
+        out->write( `Original table content (restored before` &&
+        ` each of the following examples)` ).
+        out->write( |\n| ).
+        out->write( |\n| ).
+
+        it_st = VALUE #( ( a = 1 b = 'BBB' c = '###' d = '###' )
+                        ( a = 2 b = '###' c = '###' d = '###' )
+                        ( a = 1 b = '###' c = '###' d = '###' )
+                        ( a = 3 b = '###' c = '###' d = '###' )
+                        ( a = 4 b = '###' c = 'CCC' d = '###' )
+                        ( a = 1 b = 'BBB' c = '###' d = '###' )
+                        ( a = 2 b = 'BBB' c = '###' d = '###' )
+                        ( a = 4 b = 'BBB' c = '###' d = '###' )
+                        ( a = 2 b = 'BBB' c = '###' d = '###' )
+                        ( a = 3 b = '###' c = '###' d = '###' ) ).
+
+        SORT it_st BY table_line.
+
+        "Filling another table so that the same content above
+        "is available for the examples below.
+        it_st2 = it_st.
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `77) Deleting adjacent duplicates based on` && ` primary table key` ) ).
+
+        "Note: Using the primary table key can have unexpected consequences
+        "if the primary table key is the standard key or if it is empty.
+        DELETE ADJACENT DUPLICATES FROM it_st2.
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+        it_st2 = it_st.
+
+
+**********************************************************************
+**********************************************************************
+
+        out->write( zcl_demo_abap_aux=>heading( `78) Deleting adjacent duplicates by comparing ` && `all field values` ) ).
+
+        DELETE ADJACENT DUPLICATES FROM it_st2 COMPARING ALL FIELDS.
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+        it_st2 = it_st.
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `79) Deleting adjacent duplicates by comparing ` && `specific field values` ) ).
+
+        DELETE ADJACENT DUPLICATES FROM it_st2 COMPARING a c.
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+        it_st2 = it_st.
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `80) Deleting adjacent duplicates by using a` && ` table key` ) ).
+
+        "In this case, the result í the same as in the first example
+        DELETE ADJACENT DUPLICATES FROM it_st2 USING KEY primary_key.
+
+        out->write( data = it_st2 name = `it_st2` ).
+
+
+**********************************************************************
+**********************************************************************

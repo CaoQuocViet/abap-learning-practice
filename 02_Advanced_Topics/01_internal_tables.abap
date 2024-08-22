@@ -1913,3 +1913,100 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `81) Deleting the entire internal table content` ) ).
+
+        CLEAR it_st.
+
+        "Additionally, FREE removes the memory space
+        FREE it_st2.
+
+        "Excursion: Assigning an empty constructor expression with VALUE clears
+        "the internal table
+        DATA(it_str) = VALUE string_table( ( `a` ) ( `b` ) ( `c` ) ).
+
+        it_str = VALUE #( ).
+
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+        out->write( data = it_st2 name = `it_st2` ).
+        out->write( |\n| ).
+        out->write( data = it_str name = `it_str` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Excursions` ) ).
+        out->write( |82) Secondary table keys and hashed tables\n\n| ).
+
+        "Declaring a hashed table
+        DATA hashed_tab
+                TYPE HASHED TABLE OF z_demo_abap_tab1
+                WITH UNIQUE KEY primary_key COMPONENTS key_field.
+                WITH NON-UNIQUE SORTED KEY sec_key COMPONENTS char1 char2.
+
+        "Retrieving data to work with
+        SELECT * FROM zdemo_abap_tab1 INTO TABLE @hashed_tab UP TO 3 ROWS.
+
+        "Integer table to display the table index
+        DATA int_itab TYPE OF i.
+
+        "Note: There is no primary table index in hashed tables
+        LOOP AT hashed_tab INTO DATA(hwa) USING KEY primary_key.
+                APPEND sy-tabix TO int_itab.
+        ENDLOOP.
+
+        out->write( data = int_itab name = `int_itab` ).
+        out->write( |\n| ).
+
+        CLEAR int_itab.
+
+        "Retrieving a table line via index access to the secondary index
+        "of the sorted secondary key
+        DATA(line_of_ht) = hashed_tab[ KEY sec_key INDEX 2 ].
+
+        out->write( data = line_of_ht name = `line_of_ht` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `83) Empty keys in internal table created inline` ) ).
+        "This example visualizes the fact that when using an inline
+        "construction like INTO TABLE @DATA(itab) in SELECT statements, the
+        "resulting table has an empty table key. Here, the key information
+        "is retrieved using RTTI. The output shows the key information:
+        "the information on the first internal table includes the key as
+        "specified (key_field as the primary key, non-unique - since
+        "key_kind is U and is_unique is not flagged. The result for the
+        "other internal table shows that there is no key name at all and
+        "key_kind is E (= empty).
+
+        "An internal table representing an existing table having table keys
+        "defined in contrast to an internal table created inline.
+        DATA it_with_key TYPE TABLE OF zdemo_abap_tab1
+                WITH NON-UNIQUE KEY key_field.
+
+        "Retrieving data to work with
+        SELECT * FROM zdemo_abap_tab1 INTO TABLE @it_with_key UP TO 3 ROWS.
+        SELECT * FROM zdemo_abap_tab1 INTO TABLE @DATA(it_inline) UP TO 3 ROWS.
+
+        "Using RTTI to retrieve the key information
+        DATA(k1) = CAST cl_abap_tabledescr(
+                                cl_abap_tabledescr=>describe_by_data(           
+                                        it_with_key ) )->get_key( ).
+
+        out->write( data = k1 name = `k1` ).
+        out->write( |\n| ).
+
+        DATA(k2) = CAST cl_abap_tabledescr(
+                                cl_abap_typedescr=>describe_by_data(
+                                        it_inline ) )->get_keys( ).
+
+        out->write( data = k2 name = `k2` ).
+    ENDMETHOD.
+ENDCLASS.

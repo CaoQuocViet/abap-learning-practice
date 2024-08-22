@@ -1669,3 +1669,165 @@ CLASS ZCl_DEMO_ABAP_INTERNAL_TABLE IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `71) Sorting by respecting the values of all` &&
+        ` components` ) ).
+
+        "Sorting by considering the values of each field of the table line
+        SORT it1 BY table_line.
+
+        out->write( data = it1 name = `it1` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `72) Modifying internal table content` ) ).
+        out->write( |Internal table content before modifications\n| ).
+        out->write( |\n| ).
+
+        "Standard table
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+
+        "Sorted table
+        out->write( data = it_so_sec name = `it_so_sec` ).
+        out->write( |\n| ).
+
+        "Hashed table
+        out->write( data = it_ha_sec name = `it_ha_sec` ).
+        
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `73) Directly modifying recently read table lines` ) ).
+
+        "READ TABLE 
+        "Reading tbal line into target area (field symbol)
+        READ TABLE it_so_sec ASSIGNING FIELD-SYMBOL(<fs9>) INDEX 1.
+
+        "Directly modifying an individual component value and
+        "the entire line (except the key values in sorted/hashed tables)
+        <fs9>-b = 'ZZZ'.
+        <fs9> = VALUE #( BASE <fs9> d = 'DEF' ).
+
+        "Table expressions
+        it_st[ 1 ]-b = 'GHI'. "Individual component
+        it_st[ 1 ] = VALUE #( BASE it_st[ 1 ] c = 'GHI' d = 'JKL' ). "Entire line
+        
+        ou->write( data = it_so_sec[ 1 ] name = `it_so_sec[ 1 ]` ).
+        out->write( |\n| ).
+        out->write( data = it_st[ 1 ] name = `it_st[ 1 ]` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `74) Modifying internal table content using MODIFY` ) ).
+        "Modifying table lines via key values
+        "Line that is used to modify internal table
+        line = VALUE #( a = 2 b = 'xut' c = 'cuk' ).
+
+        "Standard table
+        "With the addition FROM wa, the key values in wa determine the line
+        "to be modified.
+        "Note: Component d is not specified in "line". The value is
+        "initialized.
+        MODIFY TABLE it_st FROM line.
+
+        "Example in which the work area is constructed inline.
+        "Components b and c not specified. The values are initialized.
+        MODIFY TABLE it_st FROM VALUE #( a = 3 d = 'cho').
+
+        "Addition TRANSPORTING: Only specified fields are respected
+        "Note: In case of sorted/hasehd tables, key values cannot be
+        "specified.
+        MODIFY TABLE it_st
+                FROM VALUE #( a = 4 b = '###' c = '###' d = '###' )
+                TRANSPORTING b c.
+
+        "Modifying table lines via index
+        "Note: It is only MODIFY, not MODIFY TABLE as above.
+        "The following statement modifies the line with number 1 in the
+        "primary table index. Without the addition TRANSPORTING, the
+        "entire line is changed.
+        MODIFY it_st
+                FROM VALUE #( a = 9 b = 'aha' c = 'oho' d = 'uhu' )
+                INDEX 1.
+
+        "USING KEY: Determines the table key and thus which table index
+        "to respect
+        MODIFY it_so_sec
+                FROM VALUE #( a = 7 b = 'AHA' c = 'OHO' d = 'UHU' )
+                INDEX 1
+                USING KEY primary_key
+                TRANSPORTING b c.
+
+        "Note: Without TRANSPORTING, the statement would overwrite the
+        "secondary key which is not allowed
+        MODIFY it_ha_sec
+                FROM VALUE #( a = 7 b = 'AhA' c = 'OhO' d = 'UhU' )
+                INDEX 1
+                USING KEY sec_key_h
+                TRANSPORTING d.
+
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+        out->write( data = it_so_sec name = `it_so_sec` ).
+        out->write( |\n| ).
+        out->write( data = it_ha_sec name = `it_ha_sec` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `75) Deleting internal table content using DELETE` ) ).
+        "Deleting via index
+        "Primary table index is used implicitly.
+        DELETE it_st INDEX 1.
+
+        "If USING KEY is not used, INDEX can only be used with index
+        "tables. If a secondary key is specified, the secondary table
+        "index is respected.
+        "The following example has the same effect as above.
+        DELETE it_st INDEX 1 USING KEY primary_key.
+
+        "Hashed table. The secondary table index is respected.
+        DELETE it_ha_sec INDEX 1 USING KEY sec_key_h.
+
+        "Deleting multiple lines by specifying an index range
+        "FROM or TO alone can also be specified
+        DELETE it_so_sec FROM 2 TO 3.
+
+        "Deleting via keys
+        "When using the addition FROM wa, the line wa must have a
+        "compatible type to the table's line type and include key values.
+        "The first found line with the corresponding keys is deleted.
+        "If the key is empty, no line is deleted.
+        DELETE TABLE it_so_sec FROM VALUE #( a = 5 ).
+
+        "Explicitly specifying the table key
+        DELETE TABLE it_so_sec WITH TABLE KEY a = 1.
+
+        DELETE TABLE it_ha_sec
+                WITH TABLE KEY sec_key_h COMPONENTS b = 'hhh'.
+
+        "Deleting multiple lines based on conditions
+        "Note: Specifying the additions USING KEY/FROM/TO is also possible
+        DELETE it_st WHERE a > 5.
+
+        out->write( data = it_st name = `it_st` ).
+        out->write( |\n| ).
+        out->write( data = it_so_sec name = `it_so_sec` ).
+        out->write( |\n| ).
+        out->write( data = it_ha_sec name = `it_ha_sec` ).
+
+
+**********************************************************************
+**********************************************************************

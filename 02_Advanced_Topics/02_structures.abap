@@ -279,3 +279,136 @@ CLASS zcl_demo_abap_structures IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Accessing and populating structures` ) ).
+        out->write( |6) Populating structure components using the component selector\n\n| ).
+
+        gs_struc-num1  = 1.
+        gs_struc-num2  = 2.
+        gs_struc-char1 = 'aaa'.
+        gs_struc-char2 = 'bbb'.
+        gs_struc-pnum  = '333.33'.
+
+        out->write( data = gs_struc name = `gs_struc` ).
+
+
+**********************************************************************
+**********************************************************************
+
+        out->write( zcl_demo_abap_aux=>heading( `7) Populating structure components ` && `using the VALUE operator` ) ).
+
+        "Value assignments by addressing the structure components individually
+        "can be very bulky. Hence, the use of the VALUE operator is
+        "very handy for the value assignment, especially for filling structure
+        "components at operand position. In below examples the # sign is used
+        "before the parentheses which means that the type of the operand can be
+        "implicitly derived.
+
+        "Flat structure
+        gs_struc = VALUE #( num1 = 3
+                            num2 = 4
+                            char1 = 'ccc'
+                            char2 = 'ddd'
+                            pnum = '555.55').
+
+        "Nested structure
+        ls_nested_address = VALUE #(
+            name = VALUE #( title = `Mrs.` 
+                            first_name = `Daisy` 
+                            surname = `Pea` )
+            street = VALUE #( name = `Vegetable Lane`
+                              number = 1 )
+            city = VALUE #( zipcode = 12345
+                            name = `Botanica` ) ).
+
+        "Deep structure 
+        ls_flights = VALUE #(
+            carrier = 'AA'
+            carrier_name = 'American Airlines'
+            lt_flights = VALUE #( ( connid = 17
+                                    countryfr = 'US' 
+                                    cityfrom = 'New York' 
+                                    airpfrom = 'JFK' 
+                                    countryto = 'UK' 
+                                    cityto = 'London' 
+                                    airpto = 'LHR' )
+                                  ( connid = 64
+                                    countryfr = 'UK' 
+                                    cityfrom = 'London' 
+                                    airpfrom = 'LHR' 
+                                    countryto = 'US' 
+                                    cityto = 'New York' 
+                                    airpto = 'JFK' ) ) ).
+
+        out->write( data = gs_struc name = `gs_struc` ).
+        out->write( |\n| ).
+        out->write( data = ls_nested_address name = `ls_nested_address` ).
+        out->write( |\n| ).
+        out->write( data = ls_flights name = `ls_flights` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `8) Creating and populating a new structure ` && `using the VALUE operator` ) ).
+
+        "In the example below in which a new structure is created by declaring
+        "a variable inline the '#' sign cannot be used before the parentheses
+        "because a type cannot be derived. Instead, the type must be
+        "specified before the parentheses explicitly.
+
+        DATA(ls_copy) = VALUE gty_struc( num1 = 5
+                                         num2 = 6
+                                         char1 = 'ggg'
+                                         char2 = 'hhh' 
+                                         pnum = '777.77' ).
+
+        out->write( data = ls_copy name = `ls_copy` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `9) Accessing individual components using the ` && `component selector` ) ).
+
+        "Assigning value of individual component to a variable
+        ls_nested_address-name-first_name = 'Emma'.
+
+        "Assigning a value to a component in a deep structure.
+        "The table line is determined using a table expression.
+        ls_flights-lt_flights[ 1 ]-cityto = 'San Fran'.
+
+        out->write( data = lv_copy name = `lv_copy` ).
+        out->write( |\n| ).
+        out->write( data = ls_nested_address-name-first_name 
+                    name = `ls_nested_address-name-first_name` ).
+        out->write( |\n| ).
+        out->write( data = ls_flights-lt_flights[ 1 ]-cityto 
+                    name = `ls_flights-lt_flights[ 1 ]-cityto` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `10) Excursion: Addressing components of a variable` && ` referring to a structure ` ) ).
+
+        "Creating a data reference variable.
+        DATA(ref) = NEW gty_struc(  ).
+
+        "Assigning a component using the object component selector
+        DATA(ref_comp1) = ref->char1.
+
+        "The followign syntax   is also possible but less comfortable
+        DATA(ref_comp2) = ref->*-char2.
+
+        out->write( data = ref_comp1 name = `ref_comp1` ).
+        out->write( |\n| ).
+        out->write( data = ref_comp2 name = `ref_comp2` ).
+
+
+**********************************************************************
+**********************************************************************

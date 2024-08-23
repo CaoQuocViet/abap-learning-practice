@@ -412,3 +412,150 @@ CLASS zcl_demo_abap_structures IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `11) Using structure components for ` && `data type and data object declarations` ) ).
+
+        TYPES: lty_1 TYPE gty_struc-num1,
+            lty_2 LIKE gty_struc-char2.
+
+        DATA: lv_num1 TYPE gty_struc-num1 VALUE 123,
+              lv_num2 LIKE gs_struc-num2 VALUE 456.
+
+        out->write( data = lv_num1 name = `lv_num1` ).
+        out->write( |\n| ).
+        out->write( data = lv_num2 name = `lv_num2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `12) Copying content of a structure to another ` && ` that has the same type using the assignment operator` ) ).
+
+        "Note: In the case below, a MOVE-CORRESPONDING statement as shown
+        "further down would have the same effect:
+        "MOVE-CORRESPONDING gs_struc TO gs_struc_2.
+
+        DATA gs_struc_2 TYPE gty_struc.
+
+        gs_struc_2 = gs_struc.
+
+        out->write( data = gs_struc_2 name = `gs_struc_2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `13) Copying content of a structure to another` &&
+        ` that has an incompatible type using` &&
+        ` MOVE-CORRESPONDING statemtns and the CORRESPONDING operator` ) ).
+
+        "Both statements with MOVE-CORRESPONDING and the CORRESPONDING
+        "operator are used to assign identically named components of
+        "structures to each other.
+        "Note: For value assignments, generally bear in mind that there are
+        "special conversion and comparison rules that apply to assignments.
+        "The following examples focus on flat structures.
+
+        "Creating flat structure with different type and assigning
+        "default values.
+        DATA: BEGIN OF gs_struc_diff,
+                num1    TYPE i VALUE 111,
+                num2    TYPE i VALUE 222,
+                char1   TYPE c LENGTH 10 VALUE 'AAA',
+                c1      TYPE c LENGTH 1 VALUE 'B',
+            END OF gs_struc_diff.
+
+        "Copying structure to have the same values for another syntax variant
+        DATA(gs_struc_diff2) = gs_struc_diff.
+        DATA(gs_struc_diff3) = gs_struc_diff.
+        DATA(gs_struc_diff4) = gs_struc_diff.
+        DATA(gs_struc_diff5) = gs_struc_diff.
+
+        out->write( |Original content of structures:\n\n| ).
+        out->write( data = gs_struc name = `gs_struc` ).
+        out->write( |\n| ).
+        out->write( data = gs_struc_diff name = `gs_struc_diff` ).
+        out->write( |\n| ).
+
+        "Identically named components are moved...
+        "... and the content in nonidentical components of the target
+        "structure are kept.
+        MOVE-CORRESPONDING gs_struc TO gs_struc_diff.
+
+        "... and the content in nonidentical components in the target
+        "structure are initialized.
+        gs_struc_diff2 = CORRESPONDING #( gs_struc ).
+
+        "... and the content in nonidentical components of the target
+        "structure are kept. Same as MOVE-CORRESPONDING without additions.
+        gs_struc_diff3 = CORRESPONDING #( BASE ( gs_struc_diff3 ) gs_struc ).
+
+        "MAPPING addition: Specifying components of a source structure that
+        "are assigned to the components of a target structure in mapping
+        "relationships. Note the conversion and assignement rules.
+        gs_struc_diff4 = CORRESPONDING #( BASE ( gs_struc_diff4 )
+                                        gs_struc MAPPING c1 = char2 ).
+
+        "EXCEPT addition: Excluding components from the assignment.
+        gs_struc_diff5 = CORRESPONDING #( BASE ( gs_struc_diff5 )
+                                        gs_struc EXCEPT num2 ).
+
+        out->write( |Results of statements:\n\n| ).
+        out->write( data = gs_struc_diff name = `gs_struc_diff` ).
+        out->write( |\n| ).
+        out->write( data = gs_struc_diff2 name = `gs_struc_diff2` ).
+        out->write( |\n| ).
+        out->write( data = gs_struc_diff3 name = `gs_struc_diff3` ).
+        out->write( |\n| ).
+        out->write( data = gs_struc_diff4 name = `gs_struc_diff4` ).
+        out->write( |\n| ).
+        out->write( data = gs_struc_diff5 name = `gs_struc_diff5` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `14) Copying content of a deep ` && `structure to another` ) ).
+        out->write( |Original content of deep structures:\n\n| ).
+
+        "Note: The example purposely uses non-fitting components
+        "to emphasize conversion and assignment rules.
+
+        out->write( data = gs_deep1 name = `gs_deep1` ).
+        out->write( |\n| ).
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `15) MOVE-CORRESPONDING without additions` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  kept.
+        "- Substructure substruc is converted to string. Note that the two
+        "  components in component substruc-comp2 of gs_deep1 are drawn
+        "  together when being converted to string.
+        "- Content of gs_deep2-itab is replaced by table content of
+        "  gs_deep1-itab. Value assignment, for example,
+        "  for col2 in gs_deep2-itab: Despite the fact that there is no
+        "  identically named component col1  in the target structure,
+        "  values are assigned starting with the first column of the source
+        "  structure.
+
+        MOVE-CORRESPONDING gs_deep1 TO gs_deep2.
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures( ).
+
+
+**********************************************************************
+**********************************************************************

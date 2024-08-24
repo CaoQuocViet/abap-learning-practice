@@ -559,3 +559,128 @@ CLASS zcl_demo_abap_structures IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `16) MOVE-CORRESPONDING with the ` && `EXPANDING NESTED TABLES addition` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  kept.
+        "- Substructure substruc: Same as above
+        "- Content of gs_deep2-itab is replaced by table content of
+        "  gs_deep1-itab. Due to the addition EXPANDING NESTED TABLES, the
+        "  value assignment happens for identically named components. Hence,
+        "  only col2 as the only shared and identically named component is
+        "  filled.
+
+        MOVE-CORRESPONDING gs_deep1 TO gs_deep2 EXPANDING NESTED TABLES.
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures().
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `17) MOVE-CORRESPONDING with the` && ` KEEPING TARGET LINES addition` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  kept.
+        "- Substructure substruc: Same as above
+        "- Content of gs_deep2-itab is kept due to the addition KEEPING
+        "  TARGET LINES and content of gs_deep1-itab is added. The value
+        "  assignment concerning the added lines happens like the
+        "  MOVE-CORRESPONDING statement without addition. That is, despite
+        "  the fact that there is no identically named component col1 in
+        "  the target structure, values are assigned starting with the
+        "  first column of the source structure.
+
+        MOVE-CORRESPONDING gs_deep1 TO gs_deep2 KEEPING TARGET LINES.
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `18) MOVE-CORRESPONDING with the ` && `EXPANDING NESTED TABLES KEEPING TARGET LINES addition` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  kept.
+        "- Substructure substruc: Same as above
+        "- Content of gs_deep2-itab is kept due to the addition KEEPING
+        "  TARGET LINES. Content of gs_deep1-itab is added. The value
+        "  assignment concerning the added lines happens like the
+        "  MOVE-CORRESPONDING statement with the addition EXPANDING NESTED
+        "  TABLES. That is, the value assignment happens for identically
+        "  named components. Hence, only col2 as the only shared and
+        "  identically named component is filled.
+
+        MOVE-CORRESPONDING gs_deep1 TO gs_deep2
+            EXPANDING NESTED TABLES KEEPING TARGET LINES.
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `19) CORRESPONDING operator without additions` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  initialized.
+        "- Substructure substruc: Same as above
+        "- Content of gs_deep2-itab is replaced by table content of
+        "  gs_deep1-itab. Note the value assignment, for example, for col2
+        "  in gs_deep2-itab. Despite the fact that there is no identically
+        "  named component comp1 in the target structure, values are
+        "  assigned starting with the first column of the source structure.
+
+        gs_deep2 = CORRESPONDING #( gs_deep1 ).
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures( ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `20) CORRESPONDING operator with the` && ` DEEP addition` ) ).
+
+        "Notes on the result:
+        "- Existing content of identically named components is replaced.
+        "- Content in nonidentical components of the target structure is
+        "  initialized.
+        "- Substructure substruc: Same as above
+        "- Content of gs_deep2-itab is replaced by table content of
+        "  gs_deep1-itab. Due to the addition DEEP, the value assignment
+        "  happens for identically named components in the nested table.
+        "  Hence, only col2 as the only shared and identically named
+        "  component is filled.
+
+        gs_deep2 = CORRESPONDING #( DEEP gs_deep1 ).
+
+        out->write( data = gs_deep2 name = `gs_deep2` ).
+
+        fill_deep_structures( ).
+
+
+**********************************************************************
+**********************************************************************

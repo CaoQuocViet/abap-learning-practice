@@ -921,3 +921,303 @@ CLASS zcl_demo_abap_structures IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Sequentially reading ...` ) ).
+        out->write( |31) ... a row from a database table into a structure\n\n| ).
+
+        "In the given simple example, the line that is found and returned
+        "in a structure, that is declared inline, is simply added to an
+        "internal table.
+
+        SELECT FROM zdemo_abap_flsch
+            FIELDS *
+            WHERE carrid = 'AZ'
+            INTO @DATA(ls_sel_loop).
+            IF sy-subrc = 0.
+                APPEND ls_sel_loop TO itab.
+            ENDIF.
+        ENDSELECT.
+
+        out->write( data = itab name = `itab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `32) ... a line from an internal table into a structure` ) ).
+
+        "The given example covers the reading of a line into a field symbol.
+        "Within the loop, a modification is carried out on a component
+        "of the structures.
+
+        LOOP AT itab ASSIGNING FIELD-SYMBOL(<fs_loop>) WHERE carrid <> 'LH'.
+            <fs_loop>-carrid = 'XY'.
+        ENDLOOP.
+
+        out->write( data = itab name = `itab` ).        
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `33) Inserting a single row ` &&
+        `into a database table from a structure` ) ).
+
+        "The statements in the given example can be considered as
+        "alternatives. The third statement demonstrates that the structure
+        "might also be created and filled in place instead of inserting a
+        "line from an existing structure.
+
+        DATA ls_struc_db TYPE zdemo_abap_tab.
+
+        ls_struc_db = VALUE #( key_field = 1
+                               char1     = 'aaa'
+                               char2     = 'bbb'
+                               num1      = 2
+                               num2      = 3 ).
+
+        INSERT INTO zdemo_abap_tab1 VALUES @ls_struc_db.
+
+        "Structure filled anew with new primary key to
+        "avoid duplicate key error.
+        ls_struc_db = VALUE #( key_field = 2
+                               char1     = 'ccc'
+                               char2     = 'ddd'
+                               num1      = 4
+                               num2      = 5 ).
+
+        INSERT zdemo_abap_tab1 FROM @ls_struc_db.
+
+        INSERT zdemo_abap_tab1 FROM @( VALUE #( key_field = 3
+                                                char1     = 'eee'
+                                                char2     = 'fff'
+                                                num1      = 6
+                                                num2      = 7 ) ).
+        
+        select_from_dbtab( ).
+        out->write( data = gt_tab name = `gt_tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `34) Updating a single row ` && `in a database table from a structure` ) ).
+
+        ls_struc_db = VALUE #( key_field = 2
+                               char1    = 'ggg'
+                               char2     = 'hhh'
+                               num1      = 8
+                               num2      = 9 ).
+
+        UPDATE zdemo_abap_tab1 FROM @ls_struc_db.
+
+        UPDATE zdemo_abap_tab1 FROM @( VALUE #( key_field = 3
+                                                char1 = 'iii'
+                                                char2 = 'jjj'
+                                                num1 = 10
+                                                num2 = 11 ) ).
+
+        select_from_dbtab( ).
+        out->write( data = gt_tab name = `gt_tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `35) Updating a single row ` &&
+        `in a database table from a structure without overwriting specific ` &&
+        `components` ) ).
+
+        "If you want to update a database table row from a structure by
+        "specifying components to be changed without overwriting other
+        "components, you might choose the following way. First, read the
+        "intended line from the database table into a structure.
+        "Then, use the VALUE operator with the addition BASE and specify
+        "the components to be changed.
+
+        SELECT SINGLE *
+            FROM zdemo_abap_tab1
+            WHERE key_field = 2
+            INTO @DATA(wa).
+
+        UPDATE zdemo_abap_tab1 FROM @( VALUE #( BASE wa char2 = '###' ) ).
+
+        select_from_dbtab( ).
+        out->write( data = gt_tab name = `gt_tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `36) Updating or creating a single` && ` row in a database table from a structure using MODIFY` ) ).
+
+        "You can update or create an individual row in a database table
+        "from a structure using ABAP SQL statements with MODIFY. If a
+        "line in the database table already exists having the same keys as
+        "specified in the structure, the line gets updated. If a line does
+        "not exist with the keys specified in the structure, a new line is
+        "created in the database table. In the given example, the first
+        "statement demonstrates a modification of an existing line in the
+        "database table.The second and third statements create a new line
+        "in the database table. The third statement demonstrates that the
+        "structure might also be created and filled in place instead of
+        "inserting a line based on an existing structure.
+
+        ls_struc_db = VALUE #( key_field = 1
+                               char1     = 'kkk'
+                               char2     = 'lll'
+                               num1      = 12
+                               num2      = 13 ).
+
+        MODIFY zdemo_abap_tab1 FROM @ls_struc_db.
+
+        ls_struc_db = VALUE #( key_field = 4
+                               char1     = 'mmm'
+                               char2     = 'nnn'
+                               num1      = 14
+                               num2      = 15 ).
+
+        MODIFY zdemo_abap_tab1 FROM @ls_struc_db.
+
+        MODIFY zdemo_abap_tab1 FROM @( VALUE #( key_field = 5
+                                                char1     = 'ooo'
+                                                char2     = 'ppp'
+                                                num1      = 16
+                                                num2      = 17 ) ).
+
+        select_from_dbtab( ).
+        out->write( data = gt_tab name = `gt_tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `36) Adding rows to and updating single rows` && ` in an internal table from a structure` ) ).
+
+        "INSERT and MODIFY are ABAP statements in this context, not ABAP SQL
+        "statements. Both INSERT and APPEND add one line (or more) to an
+        "internal table. While APPEND adds at the bottom of the internal
+        "table, INSERT can be used to add lines at a specific position in
+        "tables. MODIFY changes the content of an internal table entry.
+
+        ls_struc_db = VALUE #( key_field = 6
+                                char1     = 'ZZZ'
+                                char2     = 'YYY'
+                                num1      = 18
+                                num2      = 19 ).
+
+        INSERT ls_struc_db INTO TABLE gt_tab.
+
+        INSERT VALUE #( key_field = 7
+                        char1     = 'XXX'
+                        char2     = 'WWW'
+                        num1      = 20
+                        num2      = 21 ) INTO TABLE gt_tab.
+
+        ls_struc_db = VALUE #( key_field = 8
+                                char1     = 'VVV'
+                                char2     = 'UUU'
+                                num1      = 22
+                                num2      = 23 ).
+
+        APPEND ls_struc_db TO gt_tab.
+
+        APPEND VALUE #( key_field = 9
+                        char1     = 'TTT'
+                        char2     = 'SSS'
+                        num1      = 24
+                        num2      = 25 ) TO gt_tab.
+
+        ls_struc_db = VALUE #( key_field = 1
+                                char1     = 'RRR'
+                                char2     = 'QQQ'
+                                num1      = 26
+                                num2      = 27 ).
+
+        MODIFY TABLE gt_tab FROM ls_struc_db.
+
+        MODIFY TABLE gt_tab FROM VALUE #( key_field = 2
+                                          char1     = 'PPP'
+                                          char2     = 'OOO'
+                                          num1      = 28
+                                          num2      = 29 ).
+
+        out->write( data = gt_tab name = `gt_tab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `37) Including structures` ) ).
+
+        "The example shows the inclusion of structured types and data
+        "objects in another structure. First, three structured types as
+        "well as a structured data object based on one of those types are
+        "created. Then, the types and the structure are included in the
+        "structured type address_type. With the optional addition AS and
+        "the specification of a name, the included components can be
+        "addressed by this common name as if the components are actually
+        "components of a substructure. With the optional addition
+        "RENAMING WITH SUFFIX and the specification of a name, the included
+        "components get a suffix name to avoid naming conflicts with other
+        "components.
+
+        TYPES: BEGIN OF name_type,
+                title   TYPE string,
+                prename TYPE string,
+                surname TYPE string,
+               END OF name_type,
+
+               BEGIN OF street_type,
+                        name   TYPE string,
+                        number TYPE string,
+               END OF street_type,
+
+               BEGIN OF city_type,
+                        zipcode TYPE string,
+                        name    TYPE string,
+               END OF city_type.
+
+        DATA: city_struc TYPE city_type.
+
+        TYPES BEGIN OF address_type.
+        INCLUDE TYPE name_type AS name.
+        INCLUDE TYPE street_type AS street RENAMING WITH SUFFIX _street.
+        INCLUDE STRUCTURE city_struc AS city RENAMING WITH SUFFIX _city.
+        TYPES END OF address_type.
+
+        DATA: name    TYPE name_type,
+              address TYPE address_type.
+
+        name-title = `Mr.`.
+        name-prename = `Duncan`.
+        name-surname = `Pea`.
+        address-name = name.
+        address-street-name = `Vegetable Lane`.
+        address-street-number = `11`.
+        address-zipcode_city = `349875`.
+        address-name_city = `Botanica`.
+
+        out->write( data = address name = `address` ).
+    ENDMETHOD.
+
+    METHOD initialize_dbtabs.
+        DELETE FROM zdemo_abap_tab1.
+    ENDMETHOD.
+
+    METHOD select_from_dbtab.
+        SELECT * FROM zdemo_abap_tab1
+        FIELDS *
+        WHERE key_field <> 0
+        ORDER BY bye_fiekd
+        INTO TABLE @gt_tab.
+    ENDMETHOD.
+ENDCLASS

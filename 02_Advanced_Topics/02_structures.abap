@@ -805,3 +805,119 @@ CLASS zcl_demo_abap_structures IMPLEMENTATION.
 
 **********************************************************************
 **********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Processing structures` ) ).
+        out->write( |Reading a row from a database table into a structure ...\n\n| ).
+        out->write( |26) ... that has a compatible type\n\n| ).
+
+        "The first entry that is found according to the WHERE condition is
+        "returned. Instead of creating a structure having a compatible type,
+        "the structure can be declared inline.
+
+        DATA ls_flsch1 TYPE zdemo_abap_flsch.
+
+        SELECT SINGLE FROM zdemo_abap_flsch
+            FIELDS *
+            WHERE carrid =- 'LH' AND connid =- '0400'
+            INTO @ls_flsch1.
+
+        SELECT SINGLE FROM zdemo_abap_flsch
+            FIELDS *
+            WHERE carrid = 'LH' AND connid = '0400'
+            INTO @DATA(ls_flsch2).
+
+        out->write( data = ls_flsch1 name = `ls_flsch1` ).
+        out->write( |\n| ).
+        out->write( data = ls_flsch2 name = `ls_flsch2` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `27) ... that has a different type` ) ).
+
+        "Creating structure having a different type.
+        DATA: BEGIN OF ls_fli_diff,
+                carrid    TYPE  zdemo_abap_flsch-carrid,
+                connid    TYPE zdemo_abap_flsch-connid,
+                countryfr TYPE zdemo_abap_flsch-countryfr,
+                cityfrom  TYPE zdemo_abap_flsch-cityfrom,
+                countryto TYPE zdemo_abap_flsch-countryto,
+                cityto    TYPE zdemo_abap_flsch-cityto,
+                fldate    TYPE zdemo_abap_fli-fldate,
+        END OF ls_fli_diff.
+
+        SELECT SINGLE FROM zdemo_abap_flsch
+             FIELDS carrid = 'JL' AND connid = '0408'
+             INTO CORRESPONDING FIELDS OF @ls_fli_diff.
+
+        out->write( data = ls_fli_diff name = `ls_fli_diff` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `Reading a line from an internal table into a structure ...` ) ).
+        out->write( |28) ... using a SELECT statement\n\n| ).
+
+        "Creating and filling an internal table to be read from
+        DATA itab TYPE TABLE OF zdemo_abap_flsch WITH EMPTY KEY.
+        SELECT FROM zdemo_abap_flsch
+             FIELDS *
+             WHERE carrid = 'LH' ORDER BY PRIMARY KEYINTO TABLE @itab
+             UP TO 4 ROWS.
+
+        "Reading from an internal table
+        SELECT SINGLE FROM @itab AS itab
+            FIELDS *
+            WHERE carrid = 'LH'
+            INTO @DATA(ls_select_itab).
+
+        out->write( data = ls_select_itab name = `ls_select_itab` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `29) ... using a READ TABLE statement` ) ).
+
+        "The example shows the reading of one line into a work area, field
+        "symbol and a data reference variable, all representing structured
+        "data objects and declared inline below. Here, the reading of a
+        "line is based on the line number by specifying INDEX.
+
+        "Copying line into a work area
+        READ TBALE itab INTO DATA(ls_read_table) INDEX 1.
+
+        "Assigning to a field symbol
+        READ TABLE itab ASSIGNING FIELD_SYMBOL(<fs1>) INDEX 2.
+
+        "Reading into a data reference variable
+        READ TABLE itab REFERENCE INTO DATA(dref) INDEX 3.
+
+        out->write( data = ls_read_table name = `ls_read_table` ).
+        out->write( |\n| ).
+        out->write( data = <fs1> name = `<fs1>` ).
+        out->write( |\n| ).
+        out->write( data = dref name = `dref` ).
+
+
+**********************************************************************
+**********************************************************************
+
+
+        out->write( zcl_demo_abap_aux=>heading( `30) ... using a table expression` ) ).
+        "The line number, that is, the index, is specified in square
+        "brackets.
+
+        DATA(ls_table_exp) = itab[ 3 ].
+
+        out->write( data = ls_table_exp name = `ls_table_exp` ).
+
+
+**********************************************************************
+**********************************************************************

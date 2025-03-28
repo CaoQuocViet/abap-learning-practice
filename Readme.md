@@ -1,5 +1,7 @@
 ﻿# ABAP Best Practices
-* Tài liệu này được viết bằng tiếng Việt, mong các bạn cùng đóng góp và một repo chung để chúng ta cùng học ạ. Liên hệ mình nếu cần thêm tài liệu (free).*
+
+* *Tài liệu này được viết bằng tiếng Việt, mong các bạn cùng đóng góp và một repo chung để chúng ta cùng học ạ. Liên hệ mình nếu cần thêm tài liệu (free).*
+
 *Source of this README file: [ABAP Best Practices](https://github.com/ilyakaznacheev/abap-best-practice)*
 
 A list of common principles of clean ABAP development.
